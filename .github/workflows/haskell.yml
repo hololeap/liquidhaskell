@@ -1,0 +1,56 @@
+name: Haskell CI
+
+on:
+  push:
+    branches: [ develop, hashable-1.4 ]
+  pull_request:
+    branches: [ develop, hashable-1.4 ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        cabal:
+          [ "3.4"
+          , "3.6"
+          ]
+        ghc:
+          [ "8.6"
+          , "8.8"
+          , "8.10"
+          , "9.0"
+          ]
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
+    - uses: haskell/actions/setup@v1
+      with:
+        ghc-version: ${{ matrix.ghc }}
+        cabal-version: ${{ matrix.cabal }}
+
+    - name: Cache
+      uses: actions/cache@v1
+      env:
+        cache-name: cache-cabal
+      with:
+        path: ~/.cabal
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/cabal.project') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+
+    - name: Configure
+      run: |
+        cabal update
+        cabal configure --enable-tests --enable-benchmarks
+    - name: Install dependencies
+      run: |
+        cabal build --only-dependencies
+    - name: Build
+      run: cabal build
+    - name: Run all enabled tests
+      run: cabal test --test-option=--color --test-show-details=streaming
