@@ -302,6 +302,7 @@ test-suite liquidhaskell-parser
     ghc-options:    -Wall -Wno-name-shadowing -Werror
 
 test-suite synthesis
+  buildable:        False
   type:             exitcode-stdio-1.0
   main-is:          Synthesis.hs
   other-modules:    Paths_liquidhaskell
