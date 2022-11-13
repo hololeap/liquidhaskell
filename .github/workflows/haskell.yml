@@ -47,4 +47,4 @@ jobs:
     - name: Build
       run: cabal build
     - name: Run all enabled tests
-      run: cabal test --test-option=--color --test-show-details=streaming
+      run: cabal test --test-option=--color=always --test-show-details=streaming
