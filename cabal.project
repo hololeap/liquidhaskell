@@ -10,7 +10,6 @@ packages: .
           ./liquid-platform
           ./tests
           ./tests/benchmarks/popl18/lib
-          ./benchmark-timings
 
 source-repository-package
     type: git
